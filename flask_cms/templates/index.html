@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+{#다른 html 포함시키기#}
+{#include '포함시킬페이지'or ['','','',''] 리스트는 뭥미
+페이지가 없을 시 오류를 발생하지 않으려면 ignore missing
+#}
+
+{%include['common/head.html','a.html','b.html'] ignore missing%}
+{#2,3번째 요소값은 1번째가 안되면 실행, 그래도 에러나면 ignore missing #}
+
+</head>
+
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <!-- 공용모듈 -->
+       
+        {%include['common/navi.html'] ignore missing%}
+        
+        {%include['sub/index_sub.html'] ignore missing%}
+            
+        
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    {#common/foot.html에 아래 내용을 넣고 include 하시오.#}
+    {%include ['common/foot.html'] ignore missing%}
+</body>
+
+</html>

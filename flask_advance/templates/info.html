@@ -1,0 +1,112 @@
+<html>
+<head></head>
+<body>
+    <form method='POST'>
+    <div>
+        <caption><strong>{{tradeinfo[0]['name']}}</strong>의 세부정보</caption>
+        <button onclick="history.back();">검색이동</button>
+        {% if flag: %}
+        {#정보 수정 화면#}
+        <input type='submit' value ="{{tradeinfo[0]['name']}}주식 종목 정보 수정"/>
+        {% else:%}
+        {#정보 보기 화면#}
+        <a href="/info?code={{tradeinfo[0]['code']}}&flag=update">정보 수정</a>
+        {% endif%}
+        <!-- 종목정보 -->
+        <div>
+            <b style='color:red;font-size:30;'>cur,rate만 수정 가능함!!</b>
+            <!-- cur과 rate를 어떻게 날릴건지 고민, 풀어쓸까-->
+        </div>
+        <div>
+            <table  cellspacing="0" border="1" style='width:100%;'>
+                <colgroup>
+                        <col width="50%">
+                        <col width="50%">
+                <thead>
+                    <tr>                   
+                     <th>컬럼명</th>
+                     <th>값</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {##}
+                {#키가 code 이거나 name 이면 readonly 아니면 readonly 제거(안붙인다.)#}
+                {##}
+
+                 {% for key in tradeinfo[0]: %}
+                 
+                 <tr>
+                 <td>{{key}}</td>
+                 {#조건식 ? 참일때 값 : 거짓일때 값 ==> 조건식 and 참 or 거짓#}
+                 <td>
+                        {% if flag: %}{#수정화면 일때#}
+                        <!-- not disalbe -->
+                            {% if key == 'code' or key == 'name':%}                  
+                            <input type='text' value='{{tradeinfo[0][key]}}' name='{{key}}' readonly/> 
+                            {% else:%}                  
+                            <input type='text' value='{{tradeinfo[0][key]}}' name='{{key}}' />  
+                            {%endif%}
+                        {% else: %}{#정보 보기 일때#}
+                        <!-- disable -->
+                        {{tradeinfo[0][key]}}
+                        {% endif %}
+                 </td>   
+                 </tr>
+                                
+                 {% endfor %}
+                </tbody>
+             </table> 
+
+        </div>
+        <!-- 종목 주식 10일치 리스트 -->
+        <div>
+                <table  cellspacing="0" border="1">    
+                        <colgroup>
+                            <col width="120">
+                            <col width="80">
+                            <col width="80">
+                            <col width="80">
+                            <col width="80">
+                            <col width="80">
+                            <col width="80">        
+                        </colgroup>
+                        <thead> 
+                            <tr>
+                                <th>Date</th>
+                                <th>시작가</th>
+                                <th>최고가</th>
+                                <th>최저가</th>
+                                <th>종가</th>
+                                <th>평균이동</th>
+                                <th>볼륨</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trade in tradeinfo[1]: %}
+                            {#해결방안 => sql에서 해결, 데이터를 받아서 가공후 렌더링,렌더링시 처리 방법#}
+                            {#str 함수 인식하는 부분#}
+                            {#데이터 타입을 문자열로 변환 str()#}
+                            {#슬라이싱[:끝인덱스 처리]#}
+                            <tr>
+                                <td>{{ ('%s' % trade['Date'])[:10] }}</td>
+                                {# <td>{{ ('%s' % trade['Date'])[:-8] }}</td> #}
+                                <td>{{trade['Open']}}</td>
+                                <td>{{trade['High']}}</td>
+                                <td>{{trade['Low']}}</td>
+                                <td>{{trade['Close']}}</td>
+                                <td>{{trade['Adj Close']}}</td>           
+                                <td>{{trade.get('Volume')}}</td>           
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                </table> 
+
+
+        </div>
+    </div>
+    </form>
+
+
+</body>
+
+</html>

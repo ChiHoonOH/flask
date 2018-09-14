@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title>DOM 조작 javascript</title>
+    
+    <!-- 문서가 시작되면 1234->5678로 변경 
+    순수 script 에서 1234가 메모리에 올라간시점에서 변경
+    -->
+</head>
+<body>
+    <div>
+        <input type='text' name='uid'/>
+        <div id='chg'>1234</div>
+        <script>
+            document.querySelector('#chg').innerHTML='5678';//순수 javascript 표현식.자식들
+            $('#chg')
+        </script>
+    </div>  
+</body>
+
+</html>

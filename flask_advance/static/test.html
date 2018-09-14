@@ -1,0 +1,74 @@
+<html>
+<head>
+    <title>css selector</title>
+    <!-- 브라우저스타일 < external(*.css) < internal < inline(태그에다)
+    이 순서 대로 적용됨
+     -->
+    <!--html문서에 css 적용하는 internal css-->
+    <style>
+    *{
+         color:blue;
+    }
+    /*요소(element)에 스타일 적용\하기*/
+    /*selector {스타일 기술}*/
+    /* 문서에 존재하는 모든 h2를 찾아서 글자색을 빨강색으로 적용해라*/
+    /* 문서상에서 유일하게 가질 수 있는 고유 속성값 id*/
+    h2 {
+        color:red;
+    }
+    #byunsin{
+        color:green;
+    }
+    /*클래스: 스타일을 여러 요소에ㅔ게 적용할때 사용*/
+    .t1{
+        background-color: chartreuse;
+    }
+    /*혼합형 : 유형을 섞어서 사용*/
+    p.t1{
+        color:cornflowerblue;
+    }
+    /*열거형 : 찾고 싶은 요소들을 나열*/
+
+    p,span {
+        color:blueviolet;
+    }
+    /*서열:부모>직계자식, 부모 자손(+후손)*/
+   
+    /*직계자식 > ,후손 스페이스*/
+    ul>li{
+        color:chartreuse;
+    }
+    /* ul li{
+        color:red;
+    } */
+   /*속성 셀렉터*/
+    input[name=uid]{
+        background-color:aqua;
+    }
+    /*의사결정 select => 요소명:last,first,eq(),lt(),gt(),...*/    
+    </style>
+</head>
+<body>
+    <div>
+        <input type='text' name='uid'/>
+        <input type='text' name='upw'/>
+        <h2 class='t1'>1234</h2>
+        <h2 id='byunsin'>1234</h2>
+        <p class='t1'>0000</p>
+        <p>KIN</p>
+        <span>2222</span>
+        <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>
+                3
+                <ol>
+                    <li>A</li>
+                    <li>B</li>
+                    <li>C</li>
+                </ol>
+        </ul>
+    </div>
+</body>
+
+</html>

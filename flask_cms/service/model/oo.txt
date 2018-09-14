@@ -1,0 +1,12 @@
+백업
+{#
+                 {% if key == 'code' or key == 'name':%}
+                  <td>{{key}}</td>
+                  <td><input type='text' value='{{tradeinfo[0][key]}}'/></td>  
+                 {% else:%}
+                  <td>{{key}}</td>
+                  <td><input type='text' value='{{tradeinfo[0][key]}}' readonly/></td>               
+                  #}
+
+                  <td> <input type='text' value='{{tradeinfo[0][key]}}'
+                  {{(key == 'code' or key == 'name') and 'readonly' or None}}></td>

@@ -1,0 +1,28 @@
+<!--
+클라이언트 화면 구성하는 3요소
+html5 : 뼈대,구조,컨텐츠를 가지고 있다.
+css3 : 스타일,레이아웃,디자인
+javascript : 사용자 인터렉션,이벤트,ajax 담당 = > 크롬을 구성하고 있음.
+-->
+<!-- html 표식, 문서의 시작 끝을 표기, 브라우저는 html5임을 인식 -->
+<!DOCTYPE html>
+<html>
+    <!-- 메타정보 : 문서를 기술하는 내용 - 비가시-->
+    <head></head>
+    <!-- 데이터 및 구조-가시 -->
+    <body>
+        <h2>로그인 페이지</h2>
+        <fieldset>
+        <form method='post' action='/login'>
+            {#name 속성이 데이터 전달 시 키 역할이다.#} 
+            <!-- 쉬프트 탭=> 뒤로 돌아옴 -->
+            <input type='text' placeholder="아이디" name='uid'/>
+            <br>
+            <input type='password' placeholder="비밀번호" name='pass'/>
+            <br>   
+            
+            <input type='submit' name='?'/>
+        </form>
+        </fieldset>
+    </body>
+</html>
