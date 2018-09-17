@@ -21,7 +21,7 @@ $(document).ready(function(){
         console.log('검색 클릭')
         //ajax 구성 : 통신, 현재화면유지하면서 통신후 파싱 ->
         //          화면을 동적으로 변경(Dom 조작)
-        $.get({
+        $.post({
             url:'/search',     //접속주소
             data:$('form').serialize(),    //전달 데이터: 키=값 & 키=값 한번에 다해주기
             //data:'keyword=삼성전자',

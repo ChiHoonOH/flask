@@ -99,8 +99,8 @@ def select_tradeInfo(code):
     
     return rows,rows2        #결과 리턴 : 튜프로 리턴 => 리턴할 내용을 열거
 
-    def select_searchTradeCode(tradeName):
-        rows = None #쿼리 결과
+def select_searchTradeCode(tradeName):
+    rows = None #쿼리 결과
     conn = None
     try:
         conn = my.connect(
@@ -117,10 +117,10 @@ def select_tradeInfo(code):
             select code,name,cur from tbl_trade
             where name like '%{}%'
             ''' .format(tradeName)
-             
+                
             cursur.execute(sql)#return 값 없음.          
             rows = cursur.fetchall()         
-  
+
     except Exception as e:
         rows = None         
     if conn:
@@ -128,10 +128,8 @@ def select_tradeInfo(code):
 
     return rows
 #종목 정보 가져오기
-def update_tradeInfo(param):
-    
-    result = None #쿼리 결과
-    
+def update_tradeInfo(param):    
+    result = None #쿼리 결과    
     conn = None
     try:
         
@@ -147,7 +145,7 @@ def update_tradeInfo(param):
         with conn.cursor() as cursur:#cursor가 dictionary cursor                        
             
             sql = '''update tbl_trade set cur=%s,rate=%s 
-where code=%s;'''
+            where code=%s;'''
             #param은 dict이다.                    
             cursur.execute(sql,(param['cur'],param['rate'],param['code'] ))#return 값 없음. 
             #최종 디비에 반경하기 위해 커밋 진행        

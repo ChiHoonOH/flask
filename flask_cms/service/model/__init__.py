@@ -3,6 +3,92 @@
 '''
 #1.모듈 가져오기 : mysql 계열 RDBMS 제품을 쿼리하는 모듈
 import pymysql as my
+#자료실 데이터 가져오기(페이징 x)
+def select_data():
+    row = None #쿼리 결과
+    conn = None
+    try:
+        conn = my.connect(
+            host = 'localhost',#127.0.0.1
+            port=3306, #기본포트가 3306이므로 변경하지 않았다면 생략
+            user = 'root',
+            password='root',
+            db='pythondb',
+            charset='utf8',
+            cursorclass=my.cursors.DictCursor
+        )
+    except Exception as e:
+        row=None
+        print('에러',e)
+        pass
+    else:
+        print('정상수행')
+        #3. 쿼리수행
+        #3-1.커서 획득
+        with conn.cursor() as cursur:#cursor가 dictionary cursor
+            #3-2 sql 준비
+            sql = '''
+           select * from tbl_uploadBbs order by id desc limit 0, 10;
+            '''
+            #3-3 쿼리 수행
+            cursur.execute(sql)#return 값 없음.
+            #3-4 결과 처리
+            row = cursur.fetchall()
+            
+            #rows에서 하나씩 뽑아서 출력
+            
+            print(type(row),row)
+            
+            
+                
+        #==========================
+
+    #4. 접속 종료
+    finally:
+        if conn:
+            conn.close()
+            print('연결종료')
+        else:
+            print('오류로 인한 종료')
+
+    return row #마지막에 적어준 이유는 close를 위해서 
+
+
+#자료실 업로드 처리 
+def insert_data(title,contents,uid,fileUrl):
+    result=0
+    #==================================================#
+    conn = None
+    try:
+        conn = my.connect(
+            host = 'localhost',#127.0.0.1
+            port = 3306, #기본포트가 3306이므로 변경하지 않았다면 생략
+            user = 'root',
+            password ='root',
+            db ='pythondb',
+            charset ='utf8',
+            cursorclass = my.cursors.DictCursor
+        )      
+        with conn.cursor() as cursur:#cursor가 dictionary cursor            
+            sql = '''
+            insert into 
+            tbl_uploadbbs(title,contents,author,fileUrl) 
+            values(%s,%s,%s,%s);
+            '''            
+            cursur.execute(sql,(title,contents,uid,fileUrl))#return 값 없음.          
+        conn.commit()
+        result=conn.affected_rows();    
+  
+    except Exception as e:
+        rows = None         
+    if conn:
+        conn.close()      
+
+    #return rows #마지막에 적어준 이유는 close를 위해서 
+
+    #==================================================#
+    return result
+
 
 #2. 데이터베이스 접속
 #IO의 기본은 예외처리
