@@ -1,0 +1,8 @@
+<h3>개인정보수정</h3>
+<fieldset>
+    <form method='post' action='{{url_for("loginProc.update")}}'> 
+        <p>기본 비밀번호 :{{pwd}} <br>
+        <input name='password' placeholder='비밀번호'/><br/>
+        <input type='submit' value='수정'/>
+    </form>    
+</fieldset>

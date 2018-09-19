@@ -1,0 +1,9 @@
+<h3>로그인</h3>
+<fieldset>
+    <form method='post' action='{{url_for("loginProc.home")}}'>
+        <input name='email' value="{{email}}"/><br/>
+        <input name='password'/><br/>
+        <input type='submit' value='로그인'/>
+    </form>
+    <a href='{{url_for("loginProc.signup")}}'>회원가입</a>
+</fieldset>
