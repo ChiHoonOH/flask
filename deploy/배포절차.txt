@@ -1,0 +1,189 @@
+1. 우분투 접속후 
+-리눅스 버전 확인(우분투 16.x)
+    cat /etc/issue(3.5.2)
+
+2.프로그램 설치
+루트 권한 획득
+    sudo su
+설치 패키지 업그레이드
+    sudo apt-get update
+    sudo apt-get upgrade
+    sudo apt-get install python3-pip python3-dev nginx
+
+3.가상환경구축(운영체계에 소스가 영향을 받지 않고 구동되게 하기 위함.)
+가상환경 구축을 위해서 virtualenv
+    sudo pip3 install virtualenv 
+프로젝트 디렉토리 구성
+    mkdir ~/flaskapp
+해당 프로젝트 이동
+    cd ~/flaskapp
+가상환경 구축
+    virtualenv -p python3 flaskappenv
+    source flaskappenv/bin/activate
+
+4. Flask 환경구축
+    pip install flask uwsgi
+uwsgi는 운영 관련
+    pip list
+확인
+5. 소스 작성
+만약 기존 프로젝트라면 ftp를 통해서 업로드
+ftp => fileZila 사용
+에디터 vi, vim, nano 
+    vim run.py
+    nano run.py
+-----------------------------------------------------
+from flask import Flask ,url_for,render_template,request
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'home.html'
+
+
+app.run(debug=True)
+---------------------------------------------------------
+
+6. 서버 구동 하기
+5000번 포트 열고 실행
+    sudo ufw allow 5000
+    python run.py
+브라우저 열고: http//13.125.225.36:5000/   
+터미널의 세션을 붙잡고 있어서 서비스 관점 부적절하다 => 백그라운드 가동 필요
+=====================================
+백그라운드에서 운용하는 서비스 방식 구성
+====================================
+7.WSGI Entry Point 설정
+nano ~/flaskapp/wsgi.py
+from run import app
+if __name__=="__main__":
+    app.run()
+
+8. uwsgi 설정
+uwsgi 이용하여 엔트리 포인트로 구동
+    uwsgi --socket 0.0.0.0:5000 --protocol=http -w wsgi:app
+엔트리파이썬 파일명 : app
+
+9. 가상환경 종료
+deactivate
+
+10. uwsgi 환경 설정 파일 생성
+nano ~/flaskapp/flaskapp.ini
+module -> 서버 시작점은 wsgi.py
+----------------------------------
+[uwsgi]
+module = wsgi:app
+
+master = true
+processes = 5
+
+socket = flaskapp.sock
+chmod-socket = 660
+vacuum = true
+
+die-on-term = true
+---------------------------------
+
+11.systemd unit file 생성
+해당 파일은 리눅스 서버 재가동시 자동으로 uwsgi flaskapp을 실행
+sudo nano /etc/systemd/system/flaskapp.service
+-------------------------------
+[Unit]
+Description=uwsgi instance play
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/flaskapp
+Environment="PATH=/home/ubuntu/flaskapp/flaskappenv/bin"
+ExecStart=/home/ubuntu/flaskapp/flaskappenv/bin/uwsgi --ini flaskapp.ini
+
+[Install]
+WantedBy=multi-user.target 
+-----------------------------------
+
+ExecStart = uwsgi --socket 0.0.0.0:5000 --protocol=http -w wsgi:app랑 같은거임
+
+12. 서비스 실행 및 활성화
+sudo systemctl start flaskapp
+sudo systemctl enable flaskapp
+
+13. Proxy requests 항목에 nginx
+sudo nano /etc/nginx/sites-available/flaskapp
+-------------------------------------------
+server {
+    listen 80;
+    server_name 13.125.225.36;
+
+    location /{
+         include uwsgi_params;
+         uwsgi_pass unix:///home/ubuntu/flaskapp/flaskapp.sock;
+    }
+}
+-------------------------------------------
+
+14. 링크
+    sudo ln -s /etc/nginx/sites-available/flaskapp /etc/nginx/sites-enabled
+15.설정 파일 문법 체크
+    sudo nginx -t
+message:        
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+16.nginx 재가동
+    sudo systemctl restart nginx
+17.포트 정리 및 nginx 풀 허용
+    sudo ufw delete allow 5000
+    sudo ufw allow 'Nginx Full'
+18. 소스 수정시
+    sudo systemctl restart flaskapp
+#flaskapp이라는 서비스를 restart 하시오.
+
+1.
+2.파일 업로드
+/home/ubuntu/flaskapp/flask_cms.tar
+3. 압축해제
+    tar -xvf flask_cms.tar
+
+3-1 구동
+직접구동
+(flaskappenv):~/flaskapp > python ~/flask_advance/run.py
+외부 접속을 위해서 
+run.py 접속
+host='0.0.0.0'
+그런데 안됨
+db연결 문제(주소확인):host = 'pythondb.c69gi2s1odpt.ap-northeast-2.rds.amazonaws.com',
+
+3-2 본 서비스 연동
+--------------------------------------
+변경전 from run import app
+변경후 from flask_advance.run2 import app
+-----------------------------------------
+--개발 pc에서 run.py 카피, run2.py로 수정
+그리고 flask_advance 내부에 있는 모듈(사용자 정의 모듈)을 
+사용하는 모든 모듈들에 있는 경로를 변경 시켜줌
+flask_advance.
+(최초 구성부터 이 형식에 맞추고 시작했으면 필요 없는 과정임)
+
+3-3 서버 재가동
+sudo systemctl restart flaskapp
+
+3-4 확인
+브라우저에서 ip로만 
+
+4.프로그램 시작점에 app의 출처 변경
+변경전 : from run import app
+변경후 : from flask_cms.run import app
+내부 에러 발생
+
+tail -7 /var/log/nginx/error.log
+5. 서버 재가동(소스 변경에 따른)
+sudo systemctl restart flaskapp
+
+6. 부정확한 동작 발생시 체크 포인트
+-모듈이 동일하게 다 설치 되었는지?
+가상화진입.
+source flaskappenv/bin/activate
+pip list
+
+systemctl status flaskapp
