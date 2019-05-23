@@ -16,7 +16,7 @@
 
 ### 3.필요 모듈 설치
 -웹 구성
- > pip install flask
--디비 처리
+ > pip install flask  
+-디비 처리  
  > pip install pymysql
  
