@@ -1,4 +1,4 @@
-[[flask cms구조]]
+# [[flask cms구조]]
 static : 정적 데이터가 위치하는 폴더. css,js,image, 업로르된 파일 등
 자동으로 url이 세팅이 됨
 http://ip:port/static/파일명
